@@ -14,14 +14,18 @@ namespace RevokeMsgPatcher
         [STAThread]
         static void Main()
         {
+
+
+#if DEBUG
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new FormMain());
+#else
             try
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
 
-#if DEBUG
-                Application.Run(new FormMain());
-#else
                 //当前用户是管理员的时候，直接启动应用程序
                 //如果不是管理员，则使用启动对象启动程序，以确保使用管理员身份运行
                 //获得当前登录的Windows用户标示
@@ -53,23 +57,24 @@ namespace RevokeMsgPatcher
                     //退出
                     Application.Exit();
                 }
-#endif
+
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message + "\n" + ex.StackTrace.Trim(), "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+#endif
         }
 
 
         static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            MessageBox.Show(e.Exception.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(e.Exception.Message + "\n" + e.Exception.StackTrace.Trim(), "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
-            MessageBox.Show((e.ExceptionObject as Exception).Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show((e.ExceptionObject as Exception).Message + "\n" + (e.ExceptionObject as Exception).StackTrace.Trim(), "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }
